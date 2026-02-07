@@ -1,0 +1,44 @@
+# Project Directory Map
+
+## 1. Directory Tree
+
+```text
+.
+├── .github/
+│   ├── agents/             <-- PERSONAS (Who am I?)
+│   │   ├── ralph-architect.agent.md
+│   │   ├── ralph-planner.agent.md
+│   │   ├── ralph-orchestrator.agent.md
+│   │   └── ralph-task.agent.md
+│   ├── blueprints/         <-- PROTOCOLS (How do we work?)
+│   │   ├── project-map.md
+│   │   └── loop-protocol.md
+│   ├── prompts/            <-- OPERATIONS (Genesis/Maintenance)
+│   │   ├── genesis.prompt.md
+│   │   ├── maintenance.prompt.md
+│   │   └── task-package.prompt.md
+│   └── skills/             <-- TASK MGMT (Surgical Retrieval)
+│       ├── task-lookup/
+│       │   └── SKILL.md
+│       └── available-tasks/
+│           └── SKILL.md
+├── app/                    <-- PRODUCT (Code Target)
+│   ├── src/
+│   └── tests/
+├── docs/                   <-- ARTIFACTS (Paper Trail)
+│   ├── current/            <-- STATE (Mutable)
+│   │   ├── task-status.jsonl
+│   │   ├── domain-schema.json
+│   │   └── env-state.json
+│   ├── tasks/              <-- BACKLOG (Individual Tasks)
+│   │   ├── T-001.json
+│   │   ├── T-002.json
+│   │   └── ARCHIVE.jsonl
+│   └── vision/             <-- DIRECTIVES (Fixed Truths)
+│       ├── project-goals.md
+│       ├── architecture.md
+│       ├── coding-standards.md
+│       └── testing-rules.md
+└── process.log/            <-- LOGS (Ignore)
+    └── execution.log
+```
