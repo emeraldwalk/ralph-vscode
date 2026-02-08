@@ -44,7 +44,19 @@ Format: JSON Lines (one JSON object per line).
 "timestamp": "ISO-8601"
 }
 
-## 4. Operational Rules
+## 4. Context Audit Ledger (`docs/current/context-audit.jsonl`)
+
+The Orchestrator must log the "Intentional Context" before every Ralph-Task briefing.
+
+{
+"task_id": "T-XXX",
+"file_count": 3,
+"line_count": 450,
+"files": ["app/src/lib/pb.js", "docs/vision/architecture.md"],
+"timestamp": "ISO-8601"
+}
+
+## 5. Operational Rules
 
 ### A. The "Atomic" Constraint
 

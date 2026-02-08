@@ -13,9 +13,8 @@
 │   ├── blueprints/         <-- PROTOCOLS (How do we work?)
 │   │   ├── project-map.md
 │   │   └── loop-protocol.md
-│   ├── prompts/            <-- OPERATIONS (Genesis/Maintenance)
+│   ├── prompts/            <-- OPERATIONS
 │   │   ├── genesis.prompt.md
-│   │   ├── maintenance.prompt.md
 │   │   └── task-package.prompt.md
 │   └── skills/             <-- TASK MGMT (Surgical Retrieval)
 │       ├── find-task/

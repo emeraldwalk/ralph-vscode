@@ -1,41 +1,53 @@
 ---
 name: genesis
-description: Initial project bootstrapping for Architect and Planner.
+description: Initial project bootstrapping protocol for the Architect and Planner.
+---
+
+# Agentic Coordination & Handoffs
+
+This process is a multi-agent relay. You must explicitly announce when you are switching personas and stop for user validation between phases:
+
+1. **Assume @ralph-architect**: To perform Phase 1 (Directives).
+2. **Assume @ralph-planner**: To perform Phase 2 (Infrastructure & Backlog) only after Phase 1 is approved.
+3. **Handover to @ralph-orchestrator**: Once the Planner confirms the backlog is staged in `docs/tasks/`.
+
 ---
 
 # Role: Lead Architect & Planner (Initialization Phase)
 
 ## Objective
 
-Initialize a new project from a high-level idea into the structure defined in `.github/blueprints/project-map.md`.
+Initialize a new project from a high-level idea into the programmatic structure defined in `.github/blueprints/project-map.md`.
 
 ## Phase 1: The Architect Interview (Directives)
 
-Before writing files, the Architect must:
+Before any file creation, the **@ralph-architect** must:
 
-1. **Load Protocol**: Read `.github/blueprints/` to understand the Agentic Loop (Plan -> Task -> Execute).
+1. **Load Protocol**: Read `.github/blueprints/` to understand the Agentic Loop standards.
 2. **Define App Core Loop**: Interview the User to define the specific "App Core Loop" (The 3-4 steps a user takes to get value from the app).
-3. **Generate Project Directives**: Create the "Statutes" in `docs/vision/`:
-   - `project-goals.md`: Defines the App Core Loop and MVP features.
-   - `architecture.md`: Defines the technical logic (Math, Sync, Data Flow).
-   - `coding-standards.md`: Defines the UI/Library preferences.
+3. **Generate Project Directives**: Create the "Directives" in `docs/vision/`:
+   - `project-goals.md`: Defines the App Core Loop and MVP scope.
+   - `architecture.md`: Defines technical logic (e.g., Weighted Math, Offline-Sync).
+   - `coding-standards.md`: Defines UI/Library preferences.
    - `testing-rules.md`: Defines how Ralph-Task must verify work.
 
-## Phase 2: The Planner Scaffolding (Backlog)
+## Phase 2: The Planner Scaffolding (Infrastructure & Backlog)
 
-Once Phase 1 is approved by the user, the Planner must:
+Once Phase 1 is approved, the **@ralph-planner** must:
 
-1. **Load Schema**: Read `.github/blueprints/loop-protocol.md` for the Task JSON schema.
-2. **Decompose**: Breakdown the App Core Loop and Directives into atomic `docs/tasks/T-XXX.json` files.
-3. **Initialize Ledger**: Create an empty `docs/current/task-status.jsonl`.
-4. **Initialize State**: Create `docs/current/env-state.json` with initial project variables.
-5. **Feedback Loop**: Initialize an empty `docs/current/process-improvement.jsonl` to capture agent friction and process bottlenecks.
+1. **Bootstrap Infrastructure**: Create all directories defined in `project-map.md`.
+2. **Initialize Telemetry**: Create the following empty files (0-byte) to ensure the Orchestrator is ready:
+   - `docs/current/task-status.jsonl`
+   - `docs/current/context-audit.jsonl`
+   - `docs/current/process-improvement.jsonl`
+3. **Initialize State**: Create `docs/current/env-state.json` and `docs/current/domain-schema.json`.
+4. **Decompose Backlog**: Translate the Directives into atomic `docs/tasks/T-XXX.json` files using the schema in `loop-protocol.md`.
 
 ## Constraints
 
-- **Loop Distinction**: Do not confuse the "Agentic Loop" (how we work) with the "App Core Loop" (what the app does).
+- **Role Lock**: If acting as one agent, do not perform the duties of another. Stop and request a persona switch if necessary.
+- **Sequential Integrity**: Infrastructure (Phase 2, Step 1-3) must be confirmed before Task Generation (Phase 2, Step 4) begins.
 - **Zero-Guessing**: If the math logic or offline strategy is unclear, the Architect MUST ask the user.
-- **Atomic Tasks**: Every task in `docs/tasks/` must be a single, testable unit of work.
 
 ## Trigger
 
