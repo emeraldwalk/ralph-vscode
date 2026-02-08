@@ -20,3 +20,12 @@ When finished, provide a "Context Delta" in the chat:
 - Status: Success/Failure
 - Files Changed: [List]
 - Technical Delta: [Short summary of logic changed]
+
+## Reporting Friction (Process Improvement)
+
+If you encounter a bottleneck, tool failure, or missing information:
+
+1. DO NOT stop the task unless it is impossible to proceed.
+2. APPEND a single JSON line to `docs/current/process-improvement.jsonl`.
+3. Follow the schema defined in `.github/blueprints/loop-protocol.md`.
+4. Example: {"task_id": "T-005", "issue_type": "context_gap", "observation": "Missing Tailwind config", ...}

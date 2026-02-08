@@ -9,7 +9,7 @@ agents: [ralph-task]
 
 ## Operational Workflow:
 
-1. **Query**: Call the `available-tasks` skill to get the "Next Ready Task."
+1. **Query**: Call the `next-task` skill to get the "Next Ready Task."
 2. **Decision**:
    - If a task is returned: **Claim it** (append `claimed` to the ledger) and generate the Task Package for the Worker.
    - If no tasks are ready: Ask the Planner if new tasks need to be generated or if a "Bug Fix" task is needed for a failed dependency.

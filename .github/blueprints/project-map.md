@@ -18,9 +18,9 @@
 │   │   ├── maintenance.prompt.md
 │   │   └── task-package.prompt.md
 │   └── skills/             <-- TASK MGMT (Surgical Retrieval)
-│       ├── task-lookup/
+│       ├── find-task/
 │       │   └── SKILL.md
-│       └── available-tasks/
+│       └── next-task/
 │           └── SKILL.md
 ├── app/                    <-- PRODUCT (Code Target)
 │   ├── src/
