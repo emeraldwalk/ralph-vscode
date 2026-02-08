@@ -14,7 +14,6 @@
 │   │   ├── project-map.md
 │   │   └── loop-protocol.md
 │   ├── prompts/            <-- OPERATIONS
-│   │   ├── genesis.prompt.md
 │   │   └── task-package.prompt.md
 │   └── skills/             <-- TASK MGMT (Surgical Retrieval)
 │       ├── find-task/

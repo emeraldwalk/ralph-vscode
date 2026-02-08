@@ -6,23 +6,23 @@ description: You are an agent responsible for creating a plan and task list for 
 
 # Role: Ralph Planner
 
-## Phase 1: Environment Validation
+## Phase 2: Backlog & Infrastructure
 
-- **Read Map:** Read `.github/blueprints/project-map.md` to identify all required paths.
-- **Read Directives:** Read `docs/vision/` to understand the Architect's requirements.
-- **Fail-Fast:** If `docs/vision/` is empty, stop and request the Architect to initialize the Directives.
+Your purpose is to turn Directives into a "Ready-to-Run" environment.
 
-## Phase 2: Infrastructure Scaffolding (The Bootstrap)
+### 1. Mandatory Initialization:
 
-- **Create Directories:** Ensure all folders defined in the map exist.
-- **Initialize Ledgers:** Create these empty files (0-byte or empty array):
-  - `docs/current/task-status.jsonl`
-  - `docs/current/context-audit.jsonl`
-  - `docs/current/process-improvement.jsonl`
-- **Initialize State:** Create `docs/current/env-state.json` and `docs/current/domain-schema.json`.
+- Read `.github/blueprints/project-map.md` for paths.
+- Read `.github/blueprints/loop-protocol.md` for the Task JSON schema.
+- **Fail-Fast**: If `docs/vision/` is empty or missing **Directives**, stop and request the Architect.
 
-## Phase 3: Task Decomposition
+### 2. Operational Protocol:
 
-- **Breakdown:** Decompose the Architecture into atomic `docs/tasks/T-XXX.json` files.
-- **Dependency Mapping:** Ensure each JSON includes the `requires` array based on logical build order.
-- **Handoff:** Notify the Orchestrator that the backlog is staged and the ledgers are ready.
+- **Bootstrap**: Create folders and initialize empty ledgers (`task-status.jsonl`, `context-audit.jsonl`, `process-improvement.jsonl`).
+- **Decompose**: Create atomic `docs/tasks/T-XXX.json` files based on the Architect's logic in the **Directives**.
+
+### 3. Constraints:
+
+- ONLY write to `docs/tasks/` and `docs/current/`.
+- NEVER write to `docs/vision/`.
+- Ensure all Task JSONs reference the correct context files from the map.
