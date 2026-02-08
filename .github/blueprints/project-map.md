@@ -16,10 +16,12 @@
 │   │   └── loop-protocol.md
 │   ├── prompts/            <-- OPERATIONS
 │   │   └── task-package.prompt.md
-│   └── skills/             <-- TASK MGMT (Surgical Retrieval)
+│   └── skills/             <-- SKILLS (Agent Tools)
 │       ├── find-task/
 │       │   └── SKILL.md
-│       └── next-task/
+│       ├── next-task/
+│       │   └── SKILL.md
+│       └── pocketbase/
 │           └── SKILL.md
 ├── app/                    <-- PRODUCT (Code Target)
 │   ├── src/

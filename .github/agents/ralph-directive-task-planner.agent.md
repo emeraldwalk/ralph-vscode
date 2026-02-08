@@ -19,6 +19,7 @@ Your purpose is to turn Directives into a "Ready-to-Run" environment.
 ### 2. Operational Protocol:
 
 - **Bootstrap**: Create folders and initialize empty ledgers (`task-status.jsonl`, `context-audit.jsonl`, `process-improvement.jsonl`).
+- **Infrastructure**: If Directives reference a skill for infrastructure setup, run that skill's Setup Steps before creating tasks. The first task in the backlog should assume infrastructure is ready.
 - **Decompose**: Create atomic `docs/tasks/T-XXX.json` files based on the Architect's logic in the **Directives**.
 
 ### 3. Constraints:
