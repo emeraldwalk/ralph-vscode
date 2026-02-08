@@ -14,7 +14,7 @@ The Planner must generate individual JSON files for every atomic unit of work.
 "context": {
 "files": ["app/src/path/to/file.js"],
 "docs": ["docs/vision/project-goals.md"],
-"skills": ["task-indexer"]
+"skills": ["task-lookup"]
 },
 "acceptance_criteria": [
 "Criterion 1 (e.g. Component renders without errors)",
@@ -26,36 +26,36 @@ The Planner must generate individual JSON files for every atomic unit of work.
 ## 2. Status Ledger Schema (`docs/current/task-status.jsonl`)
 
 The **Orchestrator** is the SOLE authority permitted to append to this file.
-Format: JSON Lines (one JSON object per line, no trailing commas).
+Format: JSON Lines (one JSON object per line).
 
-{"id": "T-001", "status": "pending", "updated_at": "2026-02-07T15:00:00Z", "summary": "Task initialized by Orchestrator"}
-{"id": "T-001", "status": "in-progress", "updated_at": "2026-02-07T15:10:00Z", "summary": "Assigned to Ralph-Task"}
-{"id": "T-001", "status": "completed", "updated_at": "2026-02-07T15:30:00Z", "summary": "Successfully initialized PB client", "delta": {"files_added": ["app/src/lib/pb.js"]}}
+{"id": "T-001", "status": "claimed", "updated_at": "ISO-8601", "summary": "Task claimed by Ralph-Task"}
+{"id": "T-001", "status": "completed", "updated_at": "ISO-8601", "summary": "Successfully initialized PB client", "delta": "Created src/lib/pb.js"}
 
-## 3. Operational Rules
+## 3. Improvement Ledger Schema (`docs/current/process-improvement.jsonl`)
+
+Any agent encountering friction MUST append a line to this ledger.
+Format: JSON Lines (one JSON object per line).
+
+{
+"task_id": "T-XXX",
+"issue_type": "tool_failure | context_gap | logic_bottleneck | redundant_step",
+"observation": "Short description of the friction point.",
+"suggestion": "How to fix the blueprint or agent prompt to prevent this.",
+"timestamp": "ISO-8601"
+}
+
+## 4. Operational Rules
 
 ### A. The "Atomic" Constraint
 
-- A task is valid ONLY if it focuses on a single logical change.
 - If a task requires modifying more than 3 existing files, the **Planner** must refactor it into smaller sub-tasks.
 
 ### B. The "Surgical" Read Rule
 
-- Agents must NOT read the entire `task-status.jsonl` into context.
-- Use the **`task-indexer`** skill (via `tail` or `grep`) to extract only the most recent line for a specific ID.
+- Agents must NOT read entire `.jsonl` files into context.
+- Use the **`task-lookup`** skill to extract ONLY the most recent relevant lines.
 
 ### C. The "Bootstrap" Requirement
 
-- The **Planner** must initialize `docs/current/task-status.jsonl` as an empty file before the loop begins.
-- The **Orchestrator** must fail-fast if this file is missing.
-
-### D. Task Transitions
-
-1. **Pending**: Task exists in `docs/tasks/` and has been added to the ledger.
-2. **In-Progress**: Sub-agent has been briefed and is actively editing code.
-3. **Completed**: Verification command passed and "Context Delta" received.
-4. **Failed/Blocked**: Issue identified. Orchestrator must decide to retry or create a new "Fix" task.
-
-## 4. Maintenance & Archiving
-
-When `docs/tasks/` contains more than 10 `completed` tasks, the **Maintenance Prompt** should be triggered to move those JSON files into `docs/tasks/ARCHIVE.jsonl` to keep the workspace clean.
+- The **Planner** must initialize `task-status.jsonl` and `process-improvement.jsonl` as empty files.
+- The **Orchestrator** must fail-fast if these files are missing.
