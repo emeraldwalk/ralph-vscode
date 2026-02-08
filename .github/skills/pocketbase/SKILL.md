@@ -12,6 +12,7 @@ Complete reference for PocketBase development. Covers initial project setup, dev
 ## Prerequisites
 
 - Go 1.23+ installed and on PATH
+- **Working directory**: Always run go commands from the workspace root using `go -C pb`. Never `cd` into `pb/` directly.
 
 ## Setup Steps
 
@@ -82,10 +83,9 @@ func main() {
 
 ### Step 4: Initialize Go Module
 
-Run from the `pb/` directory:
-
 ```bash
-cd pb && go mod init <PB_MODULE_NAME> && go mod tidy
+go -C pb mod init <PB_MODULE_NAME>
+go -C pb mod tidy
 ```
 
 ### Step 5: Create `pb/.env`
@@ -247,7 +247,7 @@ Example: `pb_migrations/1687801097_create_posts.js`
 To generate a new migration file via CLI:
 
 ```bash
-cd pb && go run . migrate create "description_here"
+go -C pb run . migrate create "description_here"
 ```
 
 ### Migration Structure
