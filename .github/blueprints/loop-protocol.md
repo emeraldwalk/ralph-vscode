@@ -28,6 +28,8 @@ The Planner must generate individual JSON files for every atomic unit of work.
 The **Orchestrator** is the SOLE authority permitted to append to this file.
 Format: JSON Lines (one JSON object per line).
 
+Claiming a task is atomic: when a task is discovered as available, it is immediately marked as "claimed".
+
 {"id": "T-001", "status": "claimed", "updated_at": "ISO-8601", "summary": "Task claimed by Ralph-Task"}
 {"id": "T-001", "status": "completed", "updated_at": "ISO-8601", "summary": "Successfully initialized PB client", "delta": "Created src/lib/pb.js"}
 

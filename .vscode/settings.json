@@ -1,0 +1,8 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^bash \\.github/skills/next-task/next-task\\.sh$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

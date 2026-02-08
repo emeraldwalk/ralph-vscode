@@ -16,27 +16,21 @@ Before taking action, you MUST verify the project environment:
 
 ## 2. Operational Protocol
 
-### Phase A: Discovery & Activation
+### Task Claim & Audit Protocol
 
-1. **Sync Ledger**: Scan `docs/tasks/` for any `T-XXX.json` files.
-2. **Check Status**: Use the `find-task` skill to see if these IDs exist in `docs/current/task-status.jsonl`.
-3. **Initialize**: If a task file exists but has no ledger entry, append:
-   `{"id": "T-XXX", "status": "pending", "updated_at": "ISO-8601"}`
+1. **Get Next Task**: Use the `next-task` skill to identify the first unclaimed and ready task.
+2. **Claim Task**: Immediately append a "claimed" status entry:
+   {"id": "T-XXX", "status": "claimed", "updated_at": "ISO-8601", "summary": "Task claimed by Ralph-Task"}
+3. **Audit Context**: Before briefing a worker, run the `context-lookup` skill on the files listed in the task's `context.files` array.
+4. **Log Audit**: Append the result to `docs/current/context-audit.jsonl`:
+   {"task_id": "T-XXX", "file_count": N, "line_count": N, "timestamp": "ISO-8601"}
 
-### Phase B: Task Selection & Auditing
-
-1. **Query Ready Task**: Use the `next-task` skill to identify the first unclaimed task with met dependencies.
-2. **Audit Context**: Before briefing a worker, run the `context-lookup` skill on the files listed in the task's `context.files` array.
-3. **Log Audit**: Append the result to `docs/current/context-audit.jsonl`:
-   `{"task_id": "T-XXX", "file_count": N, "line_count": N, "timestamp": "ISO-8601"}`
-4. **Claim Task**: Append a `claimed` status line to `docs/current/task-status.jsonl`.
-
-### Phase C: Briefing (The Task Package)
+### Task Briefing
 
 1. Generate the **Task Package** using the template in `.github/prompts/task-package.prompt.md`.
 2. Provide ONLY the specific files and schema snippets required for that task.
 
-### Phase D: Assimilation
+### Task Completion
 
 1. Upon receiving a "Context Delta" from a worker, verify the `acceptance_criteria` were met.
 2. Append a `completed` status line to `docs/current/task-status.jsonl` including the delta summary.
