@@ -7,8 +7,9 @@
 ├── .github/
 │   ├── agents/             <-- PERSONAS (Who am I?)
 │   │   ├── ralph-architect.agent.md
-│   │   ├── ralph-planner.agent.md
+│   │   ├── ralph-directive-task-planner.agent.md
 │   │   ├── ralph-orchestrator.agent.md
+│   │   ├── ralph-task-planner.agent.md
 │   │   └── ralph-task.agent.md
 │   ├── blueprints/         <-- PROTOCOLS (How do we work?)
 │   │   ├── project-map.md
