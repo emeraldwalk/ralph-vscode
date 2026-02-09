@@ -40,9 +40,6 @@ pb/
 │   └── .gitkeep
 └── pb_hooks/
     └── .gitkeep
-scripts/
-├── pb-dev.sh
-└── pb-reset.sh
 ```
 
 ### Step 3: Create `pb/main.go`
@@ -96,90 +93,7 @@ PB_ADMIN_EMAIL=<prompted value>
 PB_ADMIN_PASSWORD=<prompted value>
 ```
 
-### Step 6: Create `scripts/pb-dev.sh`
-
-```bash
-#!/bin/bash
-# pb-dev.sh: Start PocketBase dev server (kills existing instance first)
-set -e
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PB_DIR="$SCRIPT_DIR/../pb"
-ENV_FILE="$PB_DIR/.env"
-
-# Source config
-if [ -f "$ENV_FILE" ]; then
-  set -a; source "$ENV_FILE"; set +a
-fi
-PORT="${PB_PORT:-8090}"
-
-# Kill existing instance
-PID=$(lsof -ti :"$PORT" 2>/dev/null || true)
-if [ -n "$PID" ]; then
-  echo "Stopping PocketBase on port $PORT (PID: $PID)"
-  kill "$PID" 2>/dev/null || true
-  sleep 1
-fi
-
-# Start server
-echo "Starting PocketBase on port $PORT..."
-cd "$PB_DIR"
-exec go run . serve --http="127.0.0.1:$PORT"
-```
-
-### Step 7: Create `scripts/pb-reset.sh`
-
-```bash
-#!/bin/bash
-# pb-reset.sh: Wipe PocketBase data, create superuser, and start fresh
-set -e
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PB_DIR="$SCRIPT_DIR/../pb"
-ENV_FILE="$PB_DIR/.env"
-
-# Source config
-if [ -f "$ENV_FILE" ]; then
-  set -a; source "$ENV_FILE"; set +a
-fi
-PORT="${PB_PORT:-8090}"
-
-# Kill existing instance
-PID=$(lsof -ti :"$PORT" 2>/dev/null || true)
-if [ -n "$PID" ]; then
-  echo "Stopping PocketBase on port $PORT (PID: $PID)"
-  kill "$PID" 2>/dev/null || true
-  sleep 1
-fi
-
-# Wipe data
-if [ -d "$PB_DIR/pb_data" ]; then
-  echo "Removing pb_data..."
-  rm -rf "$PB_DIR/pb_data"
-fi
-
-# Create superuser (initializes fresh DB)
-if [ -n "$PB_ADMIN_EMAIL" ] && [ -n "$PB_ADMIN_PASSWORD" ]; then
-  echo "Creating superuser..."
-  cd "$PB_DIR"
-  go run . superuser upsert "$PB_ADMIN_EMAIL" "$PB_ADMIN_PASSWORD"
-else
-  echo "Warning: PB_ADMIN_EMAIL or PB_ADMIN_PASSWORD not set. Skipping superuser creation."
-fi
-
-# Start server
-echo "Starting PocketBase on port $PORT..."
-cd "$PB_DIR"
-exec go run . serve --http="127.0.0.1:$PORT"
-```
-
-### Step 8: Make Scripts Executable
-
-```bash
-chmod +x scripts/pb-dev.sh scripts/pb-reset.sh
-```
-
-### Step 9: Update `.gitignore`
+### Step 6: Update `.gitignore`
 
 Add these entries:
 
@@ -190,13 +104,9 @@ pb/pocketbase
 pb/.env
 ```
 
-### Step 10: Verify Setup
+### Step 7: Verify Setup
 
-Run the reset script to confirm everything works:
-
-```bash
-bash scripts/pb-reset.sh
-```
+Run a **PB Reset** (see Operations below) to confirm everything works.
 
 Expected outcome:
 - PocketBase compiles and starts
@@ -204,27 +114,39 @@ Expected outcome:
 - Server is accessible at `http://127.0.0.1:<PB_PORT>`
 - Admin dashboard at `http://127.0.0.1:<PB_PORT>/_/`
 
+## Operations
+
+All operations source `pb/.env` for `PB_PORT`, `PB_ADMIN_EMAIL`, and `PB_ADMIN_PASSWORD`.
+
+All scripts live in this skill directory and resolve the workspace root automatically via `SCRIPT_DIR`.
+
+| Operation | Script | Description |
+|-----------|--------|-------------|
+| **PB Stop** | `bash .github/skills/pocketbase/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
+| **PB Dev** | `bash .github/skills/pocketbase/pb-dev.sh` | Stop existing instance, then start the dev server |
+| **PB Reset** | `bash .github/skills/pocketbase/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |
+
 ## Iteration Workflow
 
-| Action | Command |
-|--------|---------|
-| Start server | `bash scripts/pb-dev.sh` |
-| Wipe DB and restart | `bash scripts/pb-reset.sh` |
-| Stop server | `Ctrl+C` (runs in foreground) |
+| Action | Procedure |
+|--------|-----------|
+| Start server | Run **PB Dev** |
+| Wipe DB and restart | Run **PB Reset** |
+| Stop server | Run **PB Stop** (or `Ctrl+C` if running in foreground) |
 
 ### Schema Change Loop
 
 The recommended workflow for iterating on schema:
 
 1. **Write or edit migration files** in `pb/pb_migrations/`
-2. **Run `bash scripts/pb-reset.sh`** — wipes DB, re-runs all migrations from scratch, creates superuser
+2. **Run PB Reset** — wipes DB, re-runs all migrations from scratch, creates superuser
 3. **Verify** — check the admin dashboard at `/_/` or hit the API
 
-Migrations run automatically on server start. The reset script gives a clean slate every time, so you can freely edit migration files and re-test.
+Migrations run automatically on server start. PB Reset gives a clean slate every time, so you can freely edit migration files and re-test.
 
 ### Automigrate (Dashboard Mode)
 
-When running via `go run` (which `pb-dev.sh` uses), `Automigrate` is enabled. This means changes made in the admin dashboard (`/_/`) automatically generate JS migration files in `pb_migrations/`. These files should be committed to version control.
+When running via `go run` (which **PB Dev** uses), `Automigrate` is enabled. This means changes made in the admin dashboard (`/_/`) automatically generate JS migration files in `pb_migrations/`. These files should be committed to version control.
 
 ### Hooks
 
