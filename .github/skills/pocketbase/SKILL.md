@@ -29,64 +29,15 @@ Ask the user for the following values:
 | `PB_ADMIN_PASSWORD` | Superuser password          | *(required)*       |
 | `PB_MODULE_NAME`   | Go module name               | Infer from project |
 
-### Step 2: Create Directory Structure
+### Step 2: Initialize Project
 
-```
-pb/
-├── main.go
-├── go.mod          (generated)
-├── go.sum          (generated)
-├── pb_migrations/
-│   └── .gitkeep
-└── pb_hooks/
-    └── .gitkeep
-```
-
-### Step 3: Create `pb/main.go`
-
-```go
-package main
-
-import (
-	"log"
-	"os"
-	"strings"
-
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/plugins/jsvm"
-	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-)
-
-func main() {
-	app := pocketbase.New()
-
-	// Enable automigrate only during development (go run)
-	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
-
-	jsvm.MustRegister(app, jsvm.Config{
-		MigrationsDir: "pb_migrations",
-	})
-
-	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
-		TemplateLang: migratecmd.TemplateLangJS,
-		Automigrate:  isGoRun,
-	})
-
-	if err := app.Start(); err != nil {
-		log.Fatal(err)
-	}
-}
-```
-
-### Step 4: Initialize Go Module
-
-Run **PB Init** (see Operations below) with the module name:
+Run **PB Init** (see Operations below). This creates the `pb/` directory structure, writes `pb/main.go`, adds PocketBase entries to `.gitignore`, initializes the Go module, and installs dependencies:
 
 ```bash
 bash .github/skills/pocketbase/pb-init.sh <PB_MODULE_NAME>
 ```
 
-### Step 5: Create `pb/.env`
+### Step 3: Create `pb/.env`
 
 ```bash
 PB_PORT=<prompted value>
@@ -94,18 +45,7 @@ PB_ADMIN_EMAIL=<prompted value>
 PB_ADMIN_PASSWORD=<prompted value>
 ```
 
-### Step 6: Update `.gitignore`
-
-Add these entries:
-
-```
-# PocketBase
-pb/pb_data/
-pb/pocketbase
-pb/.env
-```
-
-### Step 7: Verify Setup
+### Step 4: Verify Setup
 
 Run a **PB Reset** (see Operations below) to confirm everything works.
 
@@ -123,7 +63,7 @@ All scripts live in this skill directory and resolve the workspace root automati
 
 | Operation | Script | Description |
 |-----------|--------|-------------|
-| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE>` | Initialize Go module and run `go mod tidy` in `pb/` |
+| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE>` | Create `pb/` structure, `main.go`, `.gitignore` entries, init Go module, run `go mod tidy` |
 | **PB Stop** | `bash .github/skills/pocketbase/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
 | **PB Dev** | `bash .github/skills/pocketbase/pb-dev.sh` | Stop existing instance, then start the dev server |
 | **PB Reset** | `bash .github/skills/pocketbase/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |
