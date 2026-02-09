@@ -8,7 +8,7 @@ Ralph implements an "agentic loop" where five AI agent personas collaborate thro
 
 1. **Architect** — Interviews the user to define project goals, architecture, coding standards, and testing rules. Outputs directive documents to `docs/vision/`.
 2. **Bootstrapper** — Reads the architect's directives, initializes project infrastructure (directories, ledgers, runs setup skills), and decomposes the vision into an actionable task backlog.
-3. **Task Planner** — Converts free-form prompts into atomic task files (`docs/tasks/T-XXX.json`), each scoped to modify at most 3 files.
+3. **Task Planner** — Creates atomic task files (`docs/tasks/T-XXX.json`) from ad-hoc prompts, using the same format as the bootstrapper. Use this to add tasks to the backlog after the initial setup.
 4. **Orchestrator** — The loop coordinator. Picks the next ready task, claims it, audits context, briefs the worker agent, and logs the outcome to append-only ledgers.
 5. **Task Worker** — Receives a briefing, modifies application code, runs verification, and reports a context delta back to the orchestrator.
 
