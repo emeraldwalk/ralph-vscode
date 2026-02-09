@@ -1,11 +1,18 @@
 #!/bin/bash
-# pb-init.sh: Full PocketBase project initialization — directories, main.go, gitignore, Go module
+# pb-init.sh: Full PocketBase project initialization
+# Usage: bash .github/skills/pocketbase/pb-init.sh <module-name> <port> <admin-email> <admin-password>
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$SCRIPT_DIR/../../.."
 PB_DIR="$ROOT_DIR/pb"
 GITIGNORE="$ROOT_DIR/.gitignore"
+ENV_FILE="$PB_DIR/.env"
+
+MODULE_NAME="${1:-}"
+PB_PORT="${2:-}"
+PB_ADMIN_EMAIL="${3:-}"
+PB_ADMIN_PASSWORD="${4:-}"
 
 # Create directory structure
 mkdir -p "$PB_DIR/pb_migrations" "$PB_DIR/pb_hooks"
@@ -53,6 +60,23 @@ else
   echo "pb/main.go already exists, skipping."
 fi
 
+# Create pb/.env if it doesn't exist
+if [ ! -f "$ENV_FILE" ]; then
+  if [ -z "$PB_PORT" ] || [ -z "$PB_ADMIN_EMAIL" ] || [ -z "$PB_ADMIN_PASSWORD" ]; then
+    echo "Error: pb/.env does not exist and missing required args."
+    echo "Usage: bash .github/skills/pocketbase/pb-init.sh <module-name> <port> <admin-email> <admin-password>"
+    exit 1
+  fi
+  cat > "$ENV_FILE" << EOF
+PB_PORT=$PB_PORT
+PB_ADMIN_EMAIL=$PB_ADMIN_EMAIL
+PB_ADMIN_PASSWORD=$PB_ADMIN_PASSWORD
+EOF
+  echo "Created pb/.env."
+else
+  echo "pb/.env already exists, skipping."
+fi
+
 # Update .gitignore
 PB_IGNORE_ENTRIES=("pb/pb_data/" "pb/pocketbase" "pb/.env")
 if [ ! -f "$GITIGNORE" ]; then
@@ -71,13 +95,12 @@ else
 fi
 
 # Initialize Go module if needed
-MODULE_NAME="${1:-}"
 cd "$PB_DIR"
 
 if [ ! -f "go.mod" ]; then
   if [ -z "$MODULE_NAME" ]; then
     echo "Error: go.mod does not exist and no module name provided."
-    echo "Usage: bash .github/skills/pocketbase/pb-init.sh <module-name>"
+    echo "Usage: bash .github/skills/pocketbase/pb-init.sh <module-name> <port> <admin-email> <admin-password>"
     exit 1
   fi
   echo "Initializing Go module: $MODULE_NAME"

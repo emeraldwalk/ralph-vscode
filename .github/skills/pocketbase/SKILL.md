@@ -31,21 +31,13 @@ Ask the user for the following values:
 
 ### Step 2: Initialize Project
 
-Run **PB Init** (see Operations below). This creates the `pb/` directory structure, writes `pb/main.go`, adds PocketBase entries to `.gitignore`, initializes the Go module, and installs dependencies:
+Run **PB Init** (see Operations below) with all four configuration values. This creates the `pb/` directory structure, writes `pb/main.go`, creates `pb/.env`, adds PocketBase entries to `.gitignore`, initializes the Go module, and installs dependencies:
 
 ```bash
-bash .github/skills/pocketbase/pb-init.sh <PB_MODULE_NAME>
+bash .github/skills/pocketbase/pb-init.sh <PB_MODULE_NAME> <PB_PORT> <PB_ADMIN_EMAIL> <PB_ADMIN_PASSWORD>
 ```
 
-### Step 3: Create `pb/.env`
-
-```bash
-PB_PORT=<prompted value>
-PB_ADMIN_EMAIL=<prompted value>
-PB_ADMIN_PASSWORD=<prompted value>
-```
-
-### Step 4: Verify Setup
+### Step 3: Verify Setup
 
 Run a **PB Reset** (see Operations below) to confirm everything works.
 
@@ -63,7 +55,7 @@ All scripts live in this skill directory and resolve the workspace root automati
 
 | Operation | Script | Description |
 |-----------|--------|-------------|
-| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE>` | Create `pb/` structure, `main.go`, `.gitignore` entries, init Go module, run `go mod tidy` |
+| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE> <PORT> <EMAIL> <PASS>` | Full project setup: directories, `main.go`, `pb/.env`, `.gitignore`, Go module, `go mod tidy` |
 | **PB Stop** | `bash .github/skills/pocketbase/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
 | **PB Dev** | `bash .github/skills/pocketbase/pb-dev.sh` | Stop existing instance, then start the dev server |
 | **PB Reset** | `bash .github/skills/pocketbase/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |

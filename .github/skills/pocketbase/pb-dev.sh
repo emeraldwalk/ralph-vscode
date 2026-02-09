@@ -9,7 +9,12 @@ ENV_FILE="$ROOT_DIR/pb/.env"
 if [ -f "$ENV_FILE" ]; then
   set -a; source "$ENV_FILE"; set +a
 fi
-PORT="${PB_PORT:-8090}"
+
+if [ -z "$PB_PORT" ]; then
+  echo "Error: PB_PORT is not set. Create pb/.env with PB_PORT or export it."
+  exit 1
+fi
+PORT="$PB_PORT"
 
 # Kill existing instance
 PID=$(lsof -ti :"$PORT" 2>/dev/null || true)
