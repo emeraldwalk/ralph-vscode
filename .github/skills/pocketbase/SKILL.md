@@ -132,6 +132,7 @@ All scripts live in this skill directory and resolve the workspace root automati
 
 | Action | Procedure |
 |--------|-----------|
+| Initialize or update Go deps | Run **PB Init** (pass module name on first run) |
 | Start server | Run **PB Dev** |
 | Wipe DB and restart | Run **PB Reset** |
 | Stop server | Run **PB Stop** (or `Ctrl+C` if running in foreground) |
