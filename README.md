@@ -48,7 +48,7 @@ docs/
 
 ## Tech Stack
 
-- **Claude / LLMs** — agent reasoning (supports Anthropic models and local Ollama)
+- **LLMs** — agent reasoning (supports any model provider)
 - **Bash** — all skills are shell scripts
 - **VS Code** — IDE integration via custom agents and settings
 
