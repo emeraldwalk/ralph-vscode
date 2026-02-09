@@ -25,20 +25,24 @@ Before taking action, you MUST verify the project environment:
 4. **Log Audit**: Append the result to `docs/current/context-audit.jsonl`:
    {"task_id": "T-XXX", "file_count": N, "line_count": N, "timestamp": "ISO-8601"}
 
-### Task Briefing
+### Task Dispatch (Subagent Invocation)
 
-1. Generate the **Task Package** using the template in `.github/prompts/task-package.prompt.md`.
-2. Provide ONLY the specific files and schema snippets required for that task.
+1. Generate the **Task Package** by populating the template in `.github/prompts/task-package.prompt.md` with data from the claimed task. Include ONLY the specific files and schema snippets required for that task.
+2. **Invoke the `ralph-task` subagent** with the populated Task Package as its input.
+   - You MUST delegate implementation to `ralph-task`. Do NOT perform the task yourself or present the Task Package to the user.
+   - In VS Code Copilot, use the `runSubagent` tool to start `ralph-task` with the Task Package as the prompt.
+   - In other environments, use whatever mechanism is available to spawn a subagent (e.g., tool call, agent handoff).
+3. Wait for `ralph-task` to return a **Context Delta** before proceeding.
 
 ### Task Completion
 
-1. Upon receiving a "Context Delta" from a worker, verify the `acceptance_criteria` were met.
+1. Upon receiving a "Context Delta" from `ralph-task`, verify the `acceptance_criteria` were met.
 2. Append a `completed` status line to `docs/current/task-status.jsonl` including the delta summary.
 
 ## 3. Constraints
 
 - **Write Authority**: You are the ONLY agent permitted to write to `task-status.jsonl` and `context-audit.jsonl`.
-- **Read Limits**: Do NOT read the entire ledger. Use `tail` and `grep` via skills to find specific task states.
+- **Read Limits**: Do NOT read the entire ledger. Use the `next-task` skill to get the next available task.
 - **Statelessness**: Treat every "Claim" as a fresh start. Do not rely on chat history for technical truth; rely on `docs/current/`.
 
 ## 4. Error Handling
