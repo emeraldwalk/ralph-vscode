@@ -1,5 +1,5 @@
 ---
-name: ralph-directive-task-planner
+name: ralph-bootstrapper
 model: GPT-4.1
 description: Converts vision Directives into an actionable task backlog. Upon activation, immediately reads vision docs and creates task files.
 ---

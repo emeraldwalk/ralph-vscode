@@ -7,7 +7,7 @@
 ├── .github/
 │   ├── agents/             <-- PERSONAS (Who am I?)
 │   │   ├── ralph-architect.agent.md
-│   │   ├── ralph-directive-task-planner.agent.md
+│   │   ├── ralph-bootstrapper.agent.md
 │   │   ├── ralph-orchestrator.agent.md
 │   │   ├── ralph-task-planner.agent.md
 │   │   └── ralph-task.agent.md

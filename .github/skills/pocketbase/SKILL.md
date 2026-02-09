@@ -7,7 +7,7 @@ description: PocketBase development skill — project setup, schema iteration, J
 
 Complete reference for PocketBase development. Covers initial project setup, dev server operations, schema iteration workflow, and JS migration API.
 
-**Invocation**: The directive-task-planner runs the Setup Steps during bootstrap. Task workers reference the Iteration Workflow and JS Migration Reference during schema and feature work.
+**Invocation**: The Setup Steps should be run during project bootstrap. The Iteration Workflow and JS Migration Reference are referenced during schema and feature work.
 
 ## Prerequisites
 
