@@ -80,9 +80,10 @@ func main() {
 
 ### Step 4: Initialize Go Module
 
+Run **PB Init** (see Operations below) with the module name:
+
 ```bash
-go -C pb mod init <PB_MODULE_NAME>
-go -C pb mod tidy
+bash .github/skills/pocketbase/pb-init.sh <PB_MODULE_NAME>
 ```
 
 ### Step 5: Create `pb/.env`
@@ -122,6 +123,7 @@ All scripts live in this skill directory and resolve the workspace root automati
 
 | Operation | Script | Description |
 |-----------|--------|-------------|
+| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE>` | Initialize Go module and run `go mod tidy` in `pb/` |
 | **PB Stop** | `bash .github/skills/pocketbase/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
 | **PB Dev** | `bash .github/skills/pocketbase/pb-dev.sh` | Stop existing instance, then start the dev server |
 | **PB Reset** | `bash .github/skills/pocketbase/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |
