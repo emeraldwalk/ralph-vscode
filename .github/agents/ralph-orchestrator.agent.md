@@ -18,7 +18,9 @@ Before taking action, you MUST verify the project environment:
 
 ### Task Claim & Audit Protocol
 
-1. **Get Next Task**: Use the `next-task` skill to identify the first unclaimed and ready task.
+1. **Get Next Task**: Run the `next-task` skill. It returns `TASK_ID STATUS` (e.g. `T-003 failed`, `T-005 new`).
+   - **If STATUS is `new`**: Proceed normally to step 2.
+   - **If STATUS is `failed` or `claimed`**: STOP and inform the user that this task previously failed (or was interrupted). Ask the user whether to retry it or skip it. If the user wants to skip, re-run `next-task` with `--skip-failed` to get the next clean task.
 2. **Claim Task**: Immediately append a "claimed" status entry:
    {"id": "T-XXX", "status": "claimed", "updated_at": "ISO-8601", "summary": "Task claimed by Ralph-Task"}
 3. **Audit Context**: Before briefing a worker, run the `context-lookup` skill on the files listed in the task's `context.files` array.
@@ -36,8 +38,11 @@ Before taking action, you MUST verify the project environment:
 
 ### Task Completion
 
-1. Upon receiving a "Context Delta" from `ralph-task`, verify the `acceptance_criteria` were met.
-2. Append a `completed` status line to `docs/current/task-status.jsonl` including the delta summary.
+1. Upon receiving a "Context Delta" from `ralph-task`, check the reported Status.
+2. **If Status is Success**: Verify the `acceptance_criteria` were met, then append a `completed` status line to `docs/current/task-status.jsonl` including the delta summary.
+3. **If Status is Failure**: Append a `failed` status line to `docs/current/task-status.jsonl`:
+   {"id": "T-XXX", "status": "failed", "updated_at": "ISO-8601", "summary": "Reason from Context Delta", "error": "Technical details from Context Delta"}
+   Then STOP and report the failure to the user. Ask the user whether to retry the same task or skip it and move on. If retrying, return to step 1 of Task Claim. If skipping, run `next-task --skip-failed` to get the next clean task and continue the loop.
 
 ## 3. Constraints
 

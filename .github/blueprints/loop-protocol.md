@@ -32,6 +32,7 @@ Claiming a task is atomic: when a task is discovered as available, it is immedia
 
 {"id": "T-001", "status": "claimed", "updated_at": "ISO-8601", "summary": "Task claimed by Ralph-Task"}
 {"id": "T-001", "status": "completed", "updated_at": "ISO-8601", "summary": "Successfully initialized PB client", "delta": "Created src/lib/pb.js"}
+{"id": "T-001", "status": "failed", "updated_at": "ISO-8601", "summary": "Brief reason for failure", "error": "Error details from Context Delta"}
 
 ## 3. Improvement Ledger Schema (`docs/current/process-improvement.jsonl`)
 
