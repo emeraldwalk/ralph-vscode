@@ -24,7 +24,7 @@ COLLECTION_NAME="${1:-}"
 if ! curl -s --max-time 3 "$BASE_URL/api/health" > /dev/null 2>&1; then
   echo "Error: PocketBase server is not reachable at $BASE_URL"
   echo "Start the server first:"
-  echo "  bash .github/skills/pocketbase/scripts/pb-dev.sh"
+  echo "  bash .github/skills/pocketbase-managing/scripts/pb-dev.sh"
   exit 1
 fi
 

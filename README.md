@@ -38,8 +38,8 @@ All state is tracked in append-only JSONL ledgers (`docs/current/`), giving a fu
   skills/          # Reusable bash tools (extensible per project):
     next-task/        Find the next ready task from the backlog
     find-task/        Look up a task's latest status
-    pocketbase/       Example skill: PocketBase server lifecycle
-    pocketbase-schema/ Example skill: PocketBase schema migrations
+    pocketbase-managing/  Example skill: PocketBase server lifecycle
+    pocketbase-migrating/ Example skill: PocketBase schema migrations
 docs/
   vision/          # Architect directives (project-goals, architecture, etc.)
   tasks/           # Task backlog (T-001.json, T-002.json, …)

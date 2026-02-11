@@ -60,8 +60,8 @@ if go run . migrate 2>&1; then
   echo "All migrations applied successfully."
   echo ""
   echo "Next steps:"
-  echo "  bash .github/skills/pocketbase/scripts/pb-reset.sh   # start server with fresh data"
-  echo "  bash .github/skills/pocketbase/scripts/pb-dev.sh      # start server (keeps current data)"
+  echo "  bash .github/skills/pocketbase-managing/scripts/pb-reset.sh   # start server with fresh data"
+  echo "  bash .github/skills/pocketbase-managing/scripts/pb-dev.sh      # start server (keeps current data)"
 else
   EXIT_CODE=$?
   echo "---"

@@ -83,7 +83,7 @@ Follow this loop when adding or modifying collections:
    ```
 5. **Reset & verify** — start fresh server and check admin dashboard
    ```bash
-   bash .github/skills/pocketbase/scripts/pb-reset.sh
+   bash .github/skills/pocketbase-managing/scripts/pb-reset.sh
    ```
 
 ## Migration Authoring Rules
