@@ -15,8 +15,7 @@ PB_ADMIN_EMAIL="${3:-}"
 PB_ADMIN_PASSWORD="${4:-}"
 
 # Create directory structure
-mkdir -p "$PB_DIR/pb_migrations" "$PB_DIR/pb_hooks"
-[ -f "$PB_DIR/pb_migrations/.gitkeep" ] || touch "$PB_DIR/pb_migrations/.gitkeep"
+mkdir -p "$PB_DIR/pb_hooks"
 [ -f "$PB_DIR/pb_hooks/.gitkeep" ] || touch "$PB_DIR/pb_hooks/.gitkeep"
 echo "Directory structure ready."
 
