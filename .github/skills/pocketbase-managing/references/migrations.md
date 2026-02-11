@@ -64,29 +64,9 @@ migrate((app) => {
 })
 ```
 
-## Create an Auth Collection
+## Default Users Collection
 
-```javascript
-migrate((app) => {
-  const collection = new Collection({
-    type: "auth",
-    name: "users",
-    listRule: "id = @request.auth.id",
-    viewRule: "id = @request.auth.id",
-    createRule: "",
-    updateRule: "id = @request.auth.id",
-    deleteRule: null,
-    fields: [
-      new TextField({ name: "displayName", max: 100 }),
-    ],
-    passwordAuth: { enabled: true },
-  })
-  app.save(collection)
-}, (app) => {
-  const collection = app.findCollectionByNameOrId("users")
-  app.delete(collection)
-})
-```
+PocketBase automatically creates a `users` auth collection on init with these fields: `name` (text), `avatar` (file), `email` (system), `password` (system), `verified` (system), `created`, `updated`. Do NOT create a new `users` collection — modify the existing one if needed.
 
 ## Modify an Existing Collection
 

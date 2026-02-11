@@ -24,6 +24,13 @@ if [ -n "$PID" ]; then
   sleep 1
 fi
 
+# Create superuser on first run (no pb_data yet)
+if [ ! -d "$ROOT_DIR/pb/pb_data" ] && [ -n "$PB_ADMIN_EMAIL" ] && [ -n "$PB_ADMIN_PASSWORD" ]; then
+  echo "First run detected — creating superuser..."
+  cd "$ROOT_DIR/pb"
+  go run . superuser upsert "$PB_ADMIN_EMAIL" "$PB_ADMIN_PASSWORD"
+fi
+
 # Start server
 echo "Starting PocketBase on port $PORT..."
 cd "$ROOT_DIR/pb"

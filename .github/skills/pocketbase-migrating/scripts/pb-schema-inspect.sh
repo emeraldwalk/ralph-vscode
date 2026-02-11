@@ -37,7 +37,7 @@ fi
 AUTH_RESPONSE=$(curl -s --max-time 5 \
   -H "Content-Type: application/json" \
   -d "{\"identity\":\"$PB_ADMIN_EMAIL\",\"password\":\"$PB_ADMIN_PASSWORD\"}" \
-  "$BASE_URL/api/superusers/auth-with-password" 2>&1)
+  "$BASE_URL/api/collections/_superusers/auth-with-password" 2>&1)
 
 TOKEN=$(echo "$AUTH_RESPONSE" | grep -o '"token":"[^"]*"' | head -1 | cut -d'"' -f4)
 
