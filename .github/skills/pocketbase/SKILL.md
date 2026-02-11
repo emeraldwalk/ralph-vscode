@@ -1,6 +1,6 @@
 ---
 name: pocketbase
-description: Sets up and manages PocketBase projects, including project initialization, dev server lifecycle, schema iteration, and JS migrations. Use when bootstrapping a new PocketBase project, starting or stopping the dev server, resetting the database, or writing JS migration files.
+description: Sets up and manages PocketBase projects, including project initialization and dev server lifecycle. Use when bootstrapping a new PocketBase project, starting or stopping the dev server, or resetting the database.
 ---
 
 # PocketBase
