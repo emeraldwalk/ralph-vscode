@@ -1,11 +1,11 @@
 #!/bin/bash
 # pb-schema-inspect.sh: Dump the current PocketBase schema as JSON
-# Usage: bash .github/skills/pocketbase-schema/pb-schema-inspect.sh [collection-name]
+# Usage: bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh [collection-name]
 # Requires the PocketBase server to be running (via pb-dev or pb-reset).
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/../../.."
+ROOT_DIR="$SCRIPT_DIR/../../../.."
 ENV_FILE="$ROOT_DIR/pb/.env"
 
 if [ -f "$ENV_FILE" ]; then
@@ -24,7 +24,7 @@ COLLECTION_NAME="${1:-}"
 if ! curl -s --max-time 3 "$BASE_URL/api/health" > /dev/null 2>&1; then
   echo "Error: PocketBase server is not reachable at $BASE_URL"
   echo "Start the server first:"
-  echo "  bash .github/skills/pocketbase/pb-dev.sh"
+  echo "  bash .github/skills/pocketbase/scripts/pb-dev.sh"
   exit 1
 fi
 

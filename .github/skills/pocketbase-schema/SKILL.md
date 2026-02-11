@@ -1,13 +1,11 @@
 ---
 name: pocketbase-schema
-description: PocketBase schema skill — generate migration boilerplate, inspect live schema, and validate migrations.
+description: Generates migration boilerplate, inspects live schema, and validates PocketBase migrations. Use when creating or modifying PocketBase collections, authoring migration files, inspecting current schema, or debugging migration errors.
 ---
 
-# Skill: PocketBase Schema
+# PocketBase Schema
 
-Tooling for authoring, inspecting, and validating PocketBase schema migrations. Use this skill during schema and feature work. For server lifecycle operations (init, dev, stop, reset), see the **pocketbase** skill.
-
-**Invocation**: Use these operations whenever you need to create or modify PocketBase collections.
+Tooling for authoring, inspecting, and validating PocketBase schema migrations. For server lifecycle operations (init, dev, stop, reset), see the **pocketbase** skill.
 
 ## Prerequisites
 
@@ -19,9 +17,9 @@ Tooling for authoring, inspecting, and validating PocketBase schema migrations. 
 
 | Operation | Script | Description |
 |-----------|--------|-------------|
-| **Migrate Create** | `bash .github/skills/pocketbase-schema/pb-migrate-create.sh <description> [type]` | Generate a timestamped migration file with boilerplate |
-| **Schema Inspect** | `bash .github/skills/pocketbase-schema/pb-schema-inspect.sh [collection-name]` | Dump live schema as JSON (all collections or one) |
-| **Schema Validate** | `bash .github/skills/pocketbase-schema/pb-schema-validate.sh` | Wipe data and dry-run all migrations to check for errors |
+| **Migrate Create** | `bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh <description> [type]` | Generate a timestamped migration file with boilerplate |
+| **Schema Inspect** | `bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh [collection-name]` | Dump live schema as JSON (all collections or one) |
+| **Schema Validate** | `bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh` | Wipe data and dry-run all migrations to check for errors |
 
 ### Migrate Create
 
@@ -29,13 +27,13 @@ Generates a new migration file in `pb/pb_migrations/` with the correct timestamp
 
 ```bash
 # Create a new collection
-bash .github/skills/pocketbase-schema/pb-migrate-create.sh create_posts create
+bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh create_posts create
 
 # Modify an existing collection
-bash .github/skills/pocketbase-schema/pb-migrate-create.sh add_featured_to_posts modify
+bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh add_featured_to_posts modify
 
 # Seed data into a collection
-bash .github/skills/pocketbase-schema/pb-migrate-create.sh seed_categories seed
+bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh seed_categories seed
 ```
 
 The `type` argument selects the boilerplate template:
@@ -51,10 +49,10 @@ Requires the server to be running.
 
 ```bash
 # Dump all collections
-bash .github/skills/pocketbase-schema/pb-schema-inspect.sh
+bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh
 
 # Dump a specific collection
-bash .github/skills/pocketbase-schema/pb-schema-inspect.sh posts
+bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh posts
 ```
 
 ### Schema Validate
@@ -62,7 +60,7 @@ bash .github/skills/pocketbase-schema/pb-schema-inspect.sh posts
 Stops the server, wipes `pb_data`, and runs all migrations to check for errors. Does NOT restart the server — run `pb-reset.sh` or `pb-dev.sh` afterward.
 
 ```bash
-bash .github/skills/pocketbase-schema/pb-schema-validate.sh
+bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh
 ```
 
 ## Workflow
@@ -71,20 +69,20 @@ Follow this loop when adding or modifying collections:
 
 1. **Inspect** current schema to understand what exists
    ```bash
-   bash .github/skills/pocketbase-schema/pb-schema-inspect.sh
+   bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh
    ```
 2. **Generate** a migration boilerplate
    ```bash
-   bash .github/skills/pocketbase-schema/pb-migrate-create.sh create_posts create
+   bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh create_posts create
    ```
 3. **Edit** the generated file — fill in collection name, fields, rules, and indexes
 4. **Validate** — dry-run all migrations to catch errors
    ```bash
-   bash .github/skills/pocketbase-schema/pb-schema-validate.sh
+   bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh
    ```
 5. **Reset & verify** — start fresh server and check admin dashboard
    ```bash
-   bash .github/skills/pocketbase/pb-reset.sh
+   bash .github/skills/pocketbase/scripts/pb-reset.sh
    ```
 
 ## Migration Authoring Rules
@@ -175,37 +173,6 @@ const collection = new Collection({
 | `new Field(...)` instead of `new TextField(...)` | Use the specific constructor: `TextField`, `NumberField`, etc. |
 | Manually naming migration files | Always use `pb-migrate-create.sh` for correct timestamps |
 
-## Field Types Quick Reference
+## Reference
 
-| Constructor | Key Options |
-|-------------|-------------|
-| `TextField` | `required`, `min`, `max`, `pattern` |
-| `NumberField` | `required`, `min`, `max`, `onlyInt` |
-| `BoolField` | `required` |
-| `EmailField` | `required`, `onlyDomains`, `exceptDomains` |
-| `URLField` | `required`, `onlyDomains`, `exceptDomains` |
-| `DateField` | `required` |
-| `AutodateField` | `onCreate`, `onUpdate` |
-| `SelectField` | `values` (required), `maxSelect` |
-| `FileField` | `maxSelect`, `maxSize`, `mimeTypes`, `thumbs`, `protected` |
-| `RelationField` | `collectionId` (required), `maxSelect`, `cascadeDelete` |
-| `JSONField` | `required` (nullable unlike other fields) |
-| `EditorField` | `required`, `maxSize`, `convertURLs` |
-| `PasswordField` | `required`, `min`, `max`, `cost` |
-| `GeoPointField` | `required` |
-
-## API Rules Quick Reference
-
-| Value | Meaning |
-|-------|---------|
-| `null` | Superuser only (locked) |
-| `""` | Public access (no auth required) |
-| `"@request.auth.id != ''"` | Any authenticated user |
-| `"author = @request.auth.id"` | Owner only |
-| `"@request.auth.verified = true"` | Verified users only |
-
-Rules support: `=`, `!=`, `>`, `>=`, `<`, `<=`, `~` (contains), `!~`, `&&`, `||`
-
-For multi-value relation checks use `?=`: `"members ?= @request.auth.id"`
-
-For the full JS Migration API reference, see the **pocketbase** skill's JS Migration Reference section.
+For field types, API rules, and the full JS migration API, see the **pocketbase** skill's [references/migrations.md](../pocketbase/references/migrations.md).

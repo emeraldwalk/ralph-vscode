@@ -1,12 +1,12 @@
 #!/bin/bash
 # pb-migrate-create.sh: Generate a timestamped PocketBase migration boilerplate file
-# Usage: bash .github/skills/pocketbase-schema/pb-migrate-create.sh <description> [type]
+# Usage: bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh <description> [type]
 #   description: snake_case name (e.g. create_posts, add_featured_to_posts)
 #   type: create (default), modify, or seed
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/../../.."
+ROOT_DIR="$SCRIPT_DIR/../../../.."
 MIGRATIONS_DIR="$ROOT_DIR/pb/pb_migrations"
 
 DESCRIPTION="${1:-}"
@@ -14,7 +14,7 @@ TYPE="${2:-create}"
 
 if [ -z "$DESCRIPTION" ]; then
   echo "Error: description is required."
-  echo "Usage: bash .github/skills/pocketbase-schema/pb-migrate-create.sh <description> [type]"
+  echo "Usage: bash .github/skills/pocketbase-schema/scripts/pb-migrate-create.sh <description> [type]"
   echo "  type: create (default), modify, or seed"
   exit 1
 fi
@@ -144,4 +144,4 @@ esac
 
 echo "Created: pb/pb_migrations/$FILENAME"
 echo "Next: edit the file to fill in your collection name and fields, then validate with:"
-echo "  bash .github/skills/pocketbase-schema/pb-schema-validate.sh"
+echo "  bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh"

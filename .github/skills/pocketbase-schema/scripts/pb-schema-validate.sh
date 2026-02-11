@@ -1,12 +1,12 @@
 #!/bin/bash
 # pb-schema-validate.sh: Dry-run all PocketBase migrations to check for errors
-# Usage: bash .github/skills/pocketbase-schema/pb-schema-validate.sh
+# Usage: bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh
 # Wipes pb_data and runs migrations without starting the server.
 # Run pb-reset or pb-dev afterward to get a running server.
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/../../.."
+ROOT_DIR="$SCRIPT_DIR/../../../.."
 ENV_FILE="$ROOT_DIR/pb/.env"
 PB_DIR="$ROOT_DIR/pb"
 
@@ -60,8 +60,8 @@ if go run . migrate 2>&1; then
   echo "All migrations applied successfully."
   echo ""
   echo "Next steps:"
-  echo "  bash .github/skills/pocketbase/pb-reset.sh   # start server with fresh data"
-  echo "  bash .github/skills/pocketbase/pb-dev.sh      # start server (keeps current data)"
+  echo "  bash .github/skills/pocketbase/scripts/pb-reset.sh   # start server with fresh data"
+  echo "  bash .github/skills/pocketbase/scripts/pb-dev.sh      # start server (keeps current data)"
 else
   EXIT_CODE=$?
   echo "---"

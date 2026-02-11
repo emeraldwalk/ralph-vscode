@@ -1,13 +1,11 @@
 ---
 name: pocketbase
-description: PocketBase development skill — project setup, schema iteration, JS migrations, and dev server operations.
+description: Sets up and manages PocketBase projects, including project initialization, dev server lifecycle, schema iteration, and JS migrations. Use when bootstrapping a new PocketBase project, starting or stopping the dev server, resetting the database, or writing JS migration files.
 ---
 
-# Skill: PocketBase
+# PocketBase
 
-Complete reference for PocketBase development. Covers initial project setup, dev server operations, schema iteration workflow, and JS migration API.
-
-**Invocation**: The Setup Steps should be run during project bootstrap. The Iteration Workflow and JS Migration Reference are referenced during schema and feature work.
+Covers initial project setup, dev server operations, schema iteration workflow, and JS migration API.
 
 ## Prerequisites
 
@@ -34,7 +32,7 @@ Ask the user for the following values:
 Run **PB Init** (see Operations below) with all four configuration values. This creates the `pb/` directory structure, writes `pb/main.go`, creates `pb/.env`, adds PocketBase entries to `.gitignore`, initializes the Go module, and installs dependencies:
 
 ```bash
-bash .github/skills/pocketbase/pb-init.sh <PB_MODULE_NAME> <PB_PORT> <PB_ADMIN_EMAIL> <PB_ADMIN_PASSWORD>
+bash .github/skills/pocketbase/scripts/pb-init.sh <PB_MODULE_NAME> <PB_PORT> <PB_ADMIN_EMAIL> <PB_ADMIN_PASSWORD>
 ```
 
 ### Step 3: Verify Setup
@@ -51,14 +49,12 @@ Expected outcome:
 
 All operations source `pb/.env` for `PB_PORT`, `PB_ADMIN_EMAIL`, and `PB_ADMIN_PASSWORD`.
 
-All scripts live in this skill directory and resolve the workspace root automatically via `SCRIPT_DIR`.
-
 | Operation | Script | Description |
 |-----------|--------|-------------|
-| **PB Init** | `bash .github/skills/pocketbase/pb-init.sh <MODULE> <PORT> <EMAIL> <PASS>` | Full project setup: directories, `main.go`, `pb/.env`, `.gitignore`, Go module, `go mod tidy` |
-| **PB Stop** | `bash .github/skills/pocketbase/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
-| **PB Dev** | `bash .github/skills/pocketbase/pb-dev.sh` | Stop existing instance, then start the dev server |
-| **PB Reset** | `bash .github/skills/pocketbase/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |
+| **PB Init** | `bash .github/skills/pocketbase/scripts/pb-init.sh <MODULE> <PORT> <EMAIL> <PASS>` | Full project setup: directories, `main.go`, `pb/.env`, `.gitignore`, Go module, `go mod tidy` |
+| **PB Stop** | `bash .github/skills/pocketbase/scripts/pb-stop.sh` | Kill existing PocketBase instance on the configured port |
+| **PB Dev** | `bash .github/skills/pocketbase/scripts/pb-dev.sh` | Stop existing instance, then start the dev server |
+| **PB Reset** | `bash .github/skills/pocketbase/scripts/pb-reset.sh` | Stop instance, wipe data, create superuser, start fresh |
 
 ## Iteration Workflow
 
@@ -81,207 +77,12 @@ Migrations run automatically on server start. PB Reset gives a clean slate every
 
 ### Automigrate (Dashboard Mode)
 
-When running via `go run` (which **PB Dev** uses), `Automigrate` is enabled. This means changes made in the admin dashboard (`/_/`) automatically generate JS migration files in `pb_migrations/`. These files should be committed to version control.
+When running via `go run` (which **PB Dev** uses), `Automigrate` is enabled. Changes made in the admin dashboard (`/_/`) automatically generate JS migration files in `pb_migrations/`. Commit these files to version control.
 
 ### Hooks
 
 Add JS hooks in `pb/pb_hooks/` using the `*.pb.js` naming pattern. They hot-reload automatically during development.
 
----
-
 ## JS Migration Reference
 
-Migration files live in `pb/pb_migrations/` and run in filename order on server start.
-
-### File Naming
-
-```
-pb_migrations/{unix_timestamp}_{description}.js
-```
-
-Example: `pb_migrations/1687801097_create_posts.js`
-
-To generate a new migration file via CLI:
-
-```bash
-go -C pb run . migrate create "description_here"
-```
-
-### Migration Structure
-
-```javascript
-migrate((app) => {
-  // UP — apply changes
-}, (app) => {
-  // DOWN — revert changes (optional but recommended)
-})
-```
-
-Both callbacks receive a transactional `app` instance.
-
-### Create a Collection
-
-```javascript
-migrate((app) => {
-  const collection = new Collection({
-    type: "base",          // "base", "auth", or "view"
-    name: "posts",
-    listRule: "@request.auth.id != ''",
-    viewRule: "@request.auth.id != ''",
-    createRule: "@request.auth.id != ''",
-    updateRule: "author = @request.auth.id",
-    deleteRule: "author = @request.auth.id",
-    fields: [
-      new TextField({ name: "title", required: true, max: 200 }),
-      new EditorField({ name: "body" }),
-      new SelectField({ name: "status", values: ["draft", "published"], maxSelect: 1 }),
-      new RelationField({
-        name: "author",
-        collectionId: "COLLECTION_ID_HERE",
-        maxSelect: 1,
-        cascadeDelete: false
-      }),
-      new AutodateField({ name: "created", onCreate: true, onUpdate: false }),
-      new AutodateField({ name: "updated", onCreate: true, onUpdate: true }),
-    ],
-    indexes: [
-      "CREATE INDEX idx_posts_status ON posts (status)",
-    ],
-  })
-  app.save(collection)
-}, (app) => {
-  const collection = app.findCollectionByNameOrId("posts")
-  app.delete(collection)
-})
-```
-
-### Create an Auth Collection
-
-```javascript
-migrate((app) => {
-  const collection = new Collection({
-    type: "auth",
-    name: "users",
-    listRule: "id = @request.auth.id",
-    viewRule: "id = @request.auth.id",
-    createRule: "",
-    updateRule: "id = @request.auth.id",
-    deleteRule: null,
-    fields: [
-      new TextField({ name: "displayName", max: 100 }),
-    ],
-    passwordAuth: { enabled: true },
-  })
-  app.save(collection)
-}, (app) => {
-  const collection = app.findCollectionByNameOrId("users")
-  app.delete(collection)
-})
-```
-
-### Modify an Existing Collection
-
-```javascript
-migrate((app) => {
-  const collection = app.findCollectionByNameOrId("posts")
-
-  // Add a field
-  collection.fields.add(new BoolField({ name: "featured" }))
-
-  // Remove a field
-  collection.fields.removeByName("old_field")
-
-  // Modify a field
-  const titleField = collection.fields.getByName("title")
-  titleField.max = 500
-
-  // Update API rules
-  collection.listRule = ""
-
-  app.save(collection)
-}, (app) => {
-  const collection = app.findCollectionByNameOrId("posts")
-  collection.fields.removeByName("featured")
-  collection.listRule = "@request.auth.id != ''"
-  app.save(collection)
-})
-```
-
-### Relation Lookup by Name
-
-When creating relations, you need the target collection's ID. Look it up by name:
-
-```javascript
-migrate((app) => {
-  const users = app.findCollectionByNameOrId("users")
-
-  const collection = new Collection({
-    type: "base",
-    name: "posts",
-    fields: [
-      new TextField({ name: "title", required: true }),
-      new RelationField({
-        name: "author",
-        collectionId: users.id,     // resolved at migration time
-        maxSelect: 1,
-        cascadeDelete: false,
-      }),
-    ],
-  })
-  app.save(collection)
-})
-```
-
-### Seed Data in Migrations
-
-```javascript
-migrate((app) => {
-  const collection = app.findCollectionByNameOrId("categories")
-  for (const name of ["Work", "Personal", "Shopping"]) {
-    const record = new Record(collection)
-    record.set("name", name)
-    app.save(record)
-  }
-})
-```
-
-### Raw SQL
-
-```javascript
-migrate((app) => {
-  app.db().newQuery("UPDATE posts SET status = 'draft' WHERE status = ''").execute()
-})
-```
-
-### Field Types Quick Reference
-
-| Constructor | Key Options |
-|-------------|-------------|
-| `TextField` | `required`, `min`, `max`, `pattern` |
-| `NumberField` | `required`, `min`, `max`, `onlyInt` |
-| `BoolField` | `required` |
-| `EmailField` | `required`, `onlyDomains`, `exceptDomains` |
-| `URLField` | `required`, `onlyDomains`, `exceptDomains` |
-| `DateField` | `required` |
-| `AutodateField` | `onCreate`, `onUpdate` |
-| `SelectField` | `values` (required), `maxSelect` |
-| `FileField` | `maxSelect`, `maxSize`, `mimeTypes`, `thumbs`, `protected` |
-| `RelationField` | `collectionId` (required), `maxSelect`, `cascadeDelete` |
-| `JSONField` | `required` (nullable unlike other fields) |
-| `EditorField` | `required`, `maxSize`, `convertURLs` |
-| `PasswordField` | `required`, `min`, `max`, `cost` |
-| `GeoPointField` | `required` |
-
-### API Rules Quick Reference
-
-| Value | Meaning |
-|-------|---------|
-| `null` | Superuser only (locked) |
-| `""` | Public access (no auth required) |
-| `"@request.auth.id != ''"` | Any authenticated user |
-| `"author = @request.auth.id"` | Owner only (field `author` matches current user) |
-| `"@request.auth.verified = true"` | Verified users only |
-
-Rules support: `=`, `!=`, `>`, `>=`, `<`, `<=`, `~` (contains), `!~`, `&&`, `||`
-
-For multi-value relation checks use `?=`: `"members ?= @request.auth.id"`
+For the full JS migration API — collection creation, auth collections, modification, relations, seeding, raw SQL, field types, and API rules — see [references/migrations.md](references/migrations.md).
