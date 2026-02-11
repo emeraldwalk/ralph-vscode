@@ -1,6 +1,6 @@
 #!/bin/bash
 # pb-schema-validate.sh: Dry-run all PocketBase migrations to check for errors
-# Usage: bash .github/skills/pocketbase-schema/scripts/pb-schema-validate.sh
+# Usage: bash .github/skills/pocketbase-migrating/scripts/pb-schema-validate.sh
 # Wipes pb_data and runs migrations without starting the server.
 # Run pb-reset or pb-dev afterward to get a running server.
 set -e

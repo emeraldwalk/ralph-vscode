@@ -1,6 +1,6 @@
 #!/bin/bash
 # pb-schema-inspect.sh: Dump the current PocketBase schema as JSON
-# Usage: bash .github/skills/pocketbase-schema/scripts/pb-schema-inspect.sh [collection-name]
+# Usage: bash .github/skills/pocketbase-migrating/scripts/pb-schema-inspect.sh [collection-name]
 # Requires the PocketBase server to be running (via pb-dev or pb-reset).
 set -e
 
